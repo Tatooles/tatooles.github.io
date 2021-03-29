@@ -119,12 +119,12 @@ function playStartScreen(timestamp){
     let width = canvas.width/2;
     let height = canvas.height/2;
 
-    let button = [width - width/2, height-height/2, width, height];
+    let button = [width - width/4, height-height/4, width/2, height/2];
 
     context.fillStyle = "red";
     context.fillRect(button[0], button[1], button[2], button[3]);
 
-    if(mouseX >= width - width/2 && mouseX <= width - width/2 + width && mouseY >= height - height/2 && mouseY <= height - height/2 + height){
+    if(mouseX >= button[0] && mouseX <= button[0] + button[2] && mouseY >= button[1] && mouseY <= button[1] + button[3]){
         if(clicked){
             startScreen = false;
             game = true;
@@ -132,6 +132,11 @@ function playStartScreen(timestamp){
         context.fillStyle = "green";
         context.fillRect(button[0], button[1], button[2], button[3]);
     }
+
+    context.textAlign = "center";
+    context.fillStyle = "black";
+    context.font = "50px Arial";
+    context.fillText("Start", canvas.width/2, canvas.height/2 + 10);
 }
 
 let bullets = [];
