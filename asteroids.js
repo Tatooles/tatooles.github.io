@@ -82,7 +82,7 @@ function drawArms(timestamp){
             context.rotate(timestamp/50);
         }
         else { // Back two spin slower
-            context.rotate(timestamp/100);
+            context.rotate(timestamp/50);
         }
         context.fillStyle = "gray";
         context.fillRect(-13, -2, 26, 3);
@@ -110,57 +110,59 @@ function drawCopter(timestamp){
     context.closePath();
 }
 
-function playStartScreen(timestamp){
-    console.log(`mouseX: ${mouseX}, mouseY: ${mouseY}`);
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = "black";
-    context.fillRect(0, 0, canvas.width, canvas.height);
+let enemies = [];
 
-    let width = canvas.width/2;
-    let height = canvas.height/2;
+function drawEnemy(x, y){
+    // We'll start with just an orange square
+    context.save();
+    context.fillStyle = "orange";
+    context.fillRect(x, y, 20, 20);
+    context.restore();
+}
 
-    let button = [width - width/4, height-height/4, width/2, height/2];
-
-    context.fillStyle = "red";
-    context.fillRect(button[0], button[1], button[2], button[3]);
-
-    if(mouseX >= button[0] && mouseX <= button[0] + button[2] && mouseY >= button[1] && mouseY <= button[1] + button[3]){
-        if(clicked){
-            startScreen = false;
-            game = true;
-        }
-        context.fillStyle = "green";
-        context.fillRect(button[0], button[1], button[2], button[3]);
-    }
-
-    context.textAlign = "center";
-    context.fillStyle = "black";
-    context.font = "50px Arial";
-    context.fillText("Start", canvas.width/2, canvas.height/2 + 10);
+function spawnEnemies(delta){
+    // Spawn one on each edge
+    enemies.push({x: 0, y:100, vx: 1, vy: 0});
+    enemies.push({x: 100, y:0, vx: 0, vy: 1});
+    enemies.push({x: 1000, y:200, vx: -1, vy: 0});
+    enemies.push({x: 400, y: 500, vx: 0, vy: -1});
+    // Have them move towards the middle of the screen (500, 250) for now
 }
 
 let bullets = [];
+let skip = 0;
+let enemyCooldown = 0;
+let score = 0;
 
-function playGame(timestamp){
-    const speed = 4;
+function playGame(delta, timestamp){
+    const speed = delta/100;
 
+    
 
     bullets.forEach(bullet => {
-        bullet.x += speed*bullet.vx;
-        bullet.y += speed*bullet.vy;
+        bullet.x += 2*speed*bullet.vx;
+        bullet.y += 2*speed*bullet.vy;
         context.save();
+        context.fillStyle = "black";
         context.beginPath();
-        context.fillStyle = "blue";
         context.arc(bullet.x, bullet.y, 1, 0, Math.PI*2);
         context.fill();
         context.restore();
-    })
+
+        // Also check if bullet collides with an enemy
+        if(enemies.length > 0){
+            for(let i = enemies.length-1; i >= 0; i--){
+                if(bullet.x > enemies[i].x && bullet.x < enemies[i].x + 20 && bullet.y > enemies[i].y && bullet.y < enemies[i].y + 20){
+                    enemies.splice(i, 1);
+                    score++;
+                }
+            }
+        }
+    });
 
     // for(let i = 0; i < bullets.length; i++){
 
     // }
-
-
 
     // This copter uses WASD keys from the user to move
     if(up == true){
@@ -193,8 +195,30 @@ function playGame(timestamp){
         drawCopter(timestamp);
     context.restore();
 
-    if(shoot || clicked){
-        // Gonna have to fix this, bullets move wierdly when copter is moving
+    enemyCooldown++;
+    const enemySpeed = 100;
+    if(enemyCooldown >= enemySpeed){
+        enemyCooldown = 0;
+        spawnEnemies(delta);
+    }
+    //spawnEnemies(delta);
+
+    drawEnemy();
+
+    let i = 0;
+
+    enemies.forEach(enemy => {
+        enemy.x += speed*enemy.vx;
+        enemy.y += speed*enemy.vy;
+        drawEnemy(enemy.x, enemy.y);
+    });
+
+    skip++;
+    const shootSpeed = 10;
+
+    if((shoot || clicked) && skip >= shootSpeed){
+        skip = 0;
+        // TODO: Slow attack speed by limiting how often this can happen
         let velocityX = mouseX - locationX;
         let velocityY = mouseY - locationY;
         let magnitude = Math.sqrt(velocityX*velocityX + velocityY*velocityY);
@@ -202,10 +226,50 @@ function playGame(timestamp){
         velocityY = velocityY/magnitude;
         bullets.push({x: locationX, y: locationY, vx: velocityX, vy:velocityY});
     }
+
+    context.save();
+    context.textAlign = "center";
+    context.fillStyle = "black";
+    context.font = "50px Arial";
+    context.fillText(`Score: ${score}`, canvas.width - 120, canvas.height - 20);
+    context.restore();
+}
+
+function playStartScreen(timestamp){
+    //console.log(`mouseX: ${mouseX}, mouseY: ${mouseY}`);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = "black";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    let width = canvas.width/2;
+    let height = canvas.height/2;
+
+    let button = [width - width/4, height-height/4, width/2, height/2];
+
+    context.fillStyle = "red";
+    context.fillRect(button[0], button[1], button[2], button[3]);
+
+    if(mouseX >= button[0] && mouseX <= button[0] + button[2] && mouseY >= button[1] && mouseY <= button[1] + button[3]){
+        if(clicked){
+            startScreen = false;
+            game = true;
+        }
+        context.fillStyle = "green";
+        context.fillRect(button[0], button[1], button[2], button[3]);
+    }
+
+    context.save();
+    context.textAlign = "center";
+    context.fillStyle = "black";
+    context.font = "50px Arial";
+    context.fillText("Start", canvas.width/2, canvas.height/2 + 10);
+    context.restore();
 }
 
 let startScreen = true;
 let game = false;
+
+let lastTime;
 
 /**
  * the animation loop gets a timestamp from requestAnimationFrame
@@ -213,16 +277,20 @@ let game = false;
  * @param {DOMHighResTimeStamp} timestamp 
  */
 function loop(timestamp) {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    // context.fillStyle = "red";   
-    // context.fillRect(0, 0, canvas.width, canvas.height);
+    // time step - convert to 1/60th of a second frames
+    // 1000ms / 60fps
+    const delta = (lastTime ? timestamp-lastTime : 0) * 1000.0/60.0;
+    lastTime = timestamp;
 
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    
     if(startScreen){
         playStartScreen(timestamp);
     }
 
     if(game){
-        playGame(timestamp);
+        //context.fillStyle = "blue";
+        playGame(delta, timestamp);
     }
 
     window.requestAnimationFrame(loop);
