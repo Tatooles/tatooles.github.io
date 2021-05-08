@@ -122,10 +122,10 @@ function drawEnemy(x, y){
 
 function spawnEnemies(delta){
     // Spawn one on each edge
-    enemies.push({x: 0, y:100, vx: 1, vy: 0});
-    enemies.push({x: 100, y:0, vx: 0, vy: 1});
-    enemies.push({x: 1000, y:200, vx: -1, vy: 0});
-    enemies.push({x: 400, y: 500, vx: 0, vy: -1});
+    enemies.push({x: 0, y: Math.random() * canvas.height, vx: 1, vy: 0});
+    enemies.push({x: Math.random() * canvas.width, y:0, vx: 0, vy: 1});
+    enemies.push({x: 1000, y: Math.random() * canvas.height, vx: -1, vy: 0});
+    enemies.push({x: Math.random() * canvas.width, y: 500, vx: 0, vy: -1});
     // Have them move towards the middle of the screen (500, 250) for now
 }
 
@@ -231,7 +231,7 @@ function playGame(delta, timestamp){
     context.textAlign = "center";
     context.fillStyle = "black";
     context.font = "50px Arial";
-    context.fillText(`Score: ${score}`, canvas.width - 120, canvas.height - 20);
+    context.fillText(`Score: ${score}`, canvas.width - 140, canvas.height - 20);
     context.restore();
 }
 
