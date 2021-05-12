@@ -120,12 +120,38 @@ function drawEnemy(x, y){
     context.restore();
 }
 
+function calculateVelocity(x1, y1, x2, y2){
+    let velocityX = x2 - x1;
+    let velocityY = y2 - y1;
+    let magnitude = Math.sqrt(velocityX*velocityX + velocityY*velocityY);
+    velocityX = velocityX/magnitude;
+    velocityY = velocityY/magnitude;
+
+    return [velocityX, velocityY];
+}
+
 function spawnEnemies(delta){
     // Spawn one on each edge
-    enemies.push({x: 0, y: Math.random() * canvas.height, vx: 1, vy: 0});
-    enemies.push({x: Math.random() * canvas.width, y:0, vx: 0, vy: 1});
-    enemies.push({x: 1000, y: Math.random() * canvas.height, vx: -1, vy: 0});
-    enemies.push({x: Math.random() * canvas.width, y: 500, vx: 0, vy: -1});
+    let starty1 = Math.random() * canvas.height;
+    let velocity1 = calculateVelocity(0, starty1, canvas.width/2, canvas.height/2);
+    enemies.push({x: 0, y: starty1, vx: velocity1[0], vy: velocity1[1]});
+
+    let starty2 = Math.random() * canvas.height;
+    let velocity2 = calculateVelocity(canvas.width, starty2, canvas.width/2, canvas.height/2);
+    enemies.push({x: canvas.width, y: starty2, vx: velocity2[0], vy: velocity2[1]});
+
+    let starty3 = Math.random() * canvas.width;
+    let velocity3 = calculateVelocity(starty3, 0, canvas.width/2, canvas.height/2);
+    enemies.push({x: starty3, y: 0, vx: velocity3[0], vy: velocity3[1]});
+
+    let starty4 = Math.random() * canvas.width;
+    let velocity4 = calculateVelocity(starty4, canvas.height, canvas.width/2, canvas.height/2);
+    enemies.push({x: starty4, y: canvas.height, vx: velocity4[0], vy: velocity4[1]});
+
+
+    // enemies.push({x: Math.random() * canvas.width, y:0, vx: 0, vy: 1});
+    // enemies.push({x: 1000, y: Math.random() * canvas.height, vx: -1, vy: 0});
+    // enemies.push({x: Math.random() * canvas.width, y: 500, vx: 0, vy: -1});
     // Have them move towards the middle of the screen (500, 250) for now
 }
 
@@ -196,7 +222,7 @@ function playGame(delta, timestamp){
     context.restore();
 
     enemyCooldown++;
-    const enemySpeed = 100;
+    const enemySpeed = 100; // TODO: Change this to a normal variable and decrement it to speed up enemy spawning over time
     if(enemyCooldown >= enemySpeed){
         enemyCooldown = 0;
         spawnEnemies(delta);
@@ -208,8 +234,10 @@ function playGame(delta, timestamp){
     let i = 0;
 
     enemies.forEach(enemy => {
-        enemy.x += speed*enemy.vx;
-        enemy.y += speed*enemy.vy;
+        // TODO: Should prob update this so the enemies track towards the player, just calculate new velocity each time based on locationX and locationY
+        let velocity = calculateVelocity(enemy.x, enemy.y, locationX, locationY);
+        enemy.x += speed*velocity[0];
+        enemy.y += speed*velocity[1];
         drawEnemy(enemy.x, enemy.y);
     });
 
