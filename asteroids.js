@@ -234,11 +234,16 @@ function playGame(delta, timestamp){
     let i = 0;
 
     enemies.forEach(enemy => {
-        // TODO: Should prob update this so the enemies track towards the player, just calculate new velocity each time based on locationX and locationY
         let velocity = calculateVelocity(enemy.x, enemy.y, locationX, locationY);
         enemy.x += speed*velocity[0];
         enemy.y += speed*velocity[1];
         drawEnemy(enemy.x, enemy.y);
+
+        // Check if enemy had hit player and therefore game over
+        if(enemy.x < locationX + 40 && enemy.x > locationX - 40 && enemy.y < locationY + 40 && locationY > locationY - 40){
+            game = false;
+            gameOver = true;
+        }
     });
 
     skip++;
@@ -260,6 +265,21 @@ function playGame(delta, timestamp){
     context.fillStyle = "black";
     context.font = "50px Arial";
     context.fillText(`Score: ${score}`, canvas.width - 140, canvas.height - 20);
+    context.restore();
+}
+
+function playGameOver(timestamp){
+    //console.log(`mouseX: ${mouseX}, mouseY: ${mouseY}`);
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = "black";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    context.save();
+    context.textAlign = "center";
+    context.fillStyle = "red";
+    context.font = "50px Arial";
+    context.fillText("Game Over", canvas.width/2, canvas.height/2 + 10);
     context.restore();
 }
 
@@ -296,6 +316,7 @@ function playStartScreen(timestamp){
 
 let startScreen = true;
 let game = false;
+let gameOver = false;
 
 let lastTime;
 
@@ -307,6 +328,7 @@ let lastTime;
 function loop(timestamp) {
     // time step - convert to 1/60th of a second frames
     // 1000ms / 60fps
+
     const delta = (lastTime ? timestamp-lastTime : 0) * 1000.0/60.0;
     lastTime = timestamp;
 
@@ -319,6 +341,13 @@ function loop(timestamp) {
     if(game){
         //context.fillStyle = "blue";
         playGame(delta, timestamp);
+        context.fillStyle = "orange";
+        // let width = 40;
+        // context.fillRect(locationX - width, locationY - width, 2*width, 2*width);
+    }
+
+    if(gameOver){
+        playGameOver(timestamp);
     }
 
     window.requestAnimationFrame(loop);
