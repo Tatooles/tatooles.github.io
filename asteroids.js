@@ -116,7 +116,7 @@ function drawEnemy(x, y){
     // We'll start with just an orange square
     context.save();
     context.fillStyle = "orange";
-    context.fillRect(x, y, 20, 20);
+    context.fillRect(x-10, y-10, 20, 20);
     context.restore();
 }
 
@@ -161,7 +161,7 @@ let enemyCooldown = 0;
 let score = 0;
 
 function playGame(delta, timestamp){
-    const speed = delta/100;
+    const speed = delta/150;
 
     
 
@@ -185,11 +185,6 @@ function playGame(delta, timestamp){
             }
         }
     });
-
-    // for(let i = 0; i < bullets.length; i++){
-
-    // }
-
     // This copter uses WASD keys from the user to move
     if(up == true){
         locationY -= 10;
@@ -215,6 +210,7 @@ function playGame(delta, timestamp){
     if(locationY > canvas.height){
         locationY = canvas.height;
     }
+    
     context.save();
         context.translate(locationX, locationY);
         context.rotate(Math.atan2(locationY - mouseY, locationX - mouseX) + Math.PI/2);
@@ -222,7 +218,7 @@ function playGame(delta, timestamp){
     context.restore();
 
     enemyCooldown++;
-    const enemySpeed = 100; // TODO: Change this to a normal variable and decrement it to speed up enemy spawning over time
+    const enemySpeed = 200; // TODO: Change this to a normal variable and decrement it to speed up enemy spawning over time
     if(enemyCooldown >= enemySpeed){
         enemyCooldown = 0;
         spawnEnemies(delta);
@@ -240,7 +236,7 @@ function playGame(delta, timestamp){
         drawEnemy(enemy.x, enemy.y);
 
         // Check if enemy had hit player and therefore game over
-        if(enemy.x < locationX + 40 && enemy.x > locationX - 40 && enemy.y < locationY + 40 && locationY > locationY - 40){
+        if(enemy.x < locationX + 30 && enemy.x > locationX - 30 && enemy.y < locationY + 30 && locationY > locationY - 30){
             game = false;
             gameOver = true;
         }
