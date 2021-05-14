@@ -242,11 +242,11 @@ function playGame(delta, timestamp){
         }
     });
 
-    skip++;
-    const shootSpeed = 10;
+    //skip++;
+    //const shootSpeed = 10;
 
-    if((shoot || clicked) && skip >= shootSpeed){
-        skip = 0;
+    if((shoot || clicked)){
+        //skip = 0;
         // TODO: Slow attack speed by limiting how often this can happen
         let velocityX = mouseX - locationX;
         let velocityY = mouseY - locationY;
