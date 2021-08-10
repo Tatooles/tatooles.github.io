@@ -1,114 +1,57 @@
-* {
-    margin: 0;
-    padding: 0;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
 body {
     background-color: #626262;
-    margin: 0;
     font-family: 'Oswald', serif;
     font-size: 25px;
 }
 
-.column-container {
-    background-color: #626262;
-    display: flex;
-    justify-content: center;
-}
-
-#about {
-    margin-left: 30px;
-}
-
-#interests {
-    margin-right: 30px;
-}
-
-.container {
+.text {
     background-color: #DB4444;
-    justify-content: center;
-    height: auto;
-    width: 720px;
+    padding: 1rem;
+    text-align: center;
+    font-size: 16px;
 }
 
-nav {
-    background-color: white;
-    color: black;
+.image {
+    padding: 1rem;
+    background-color: #DB4444;
 }
 
-nav ul {
-    flex-direction: row;
-    display: flex;
-    justify-content: center;
+img {
+    border-radius: 20px;
 }
 
-nav li {
-    list-style: none;
-    padding: 3%;
+.navbar{
+    padding: .5rem;
 }
 
 nav li:hover {
     background-color: #DB444444;
 }
 
-nav a {
-    color: inherit;
-    text-decoration: none;
+.row {
+    --bs-gutter-x: 0;
 }
 
-img {
-    width: 350px;
-    border-radius: 20px;
-}
-
-.body-container {
-    flex-direction: column;
-    display: flex;
-}
-
-.body-inner {
-    flex-direction: row;
-    display: flex;
-    margin: 20px;
-}
-
-.inner-text {
+.inner {
     background-color: white;
-    text-align: center;
-    padding: 20px;
     border-radius: 20px;
-    font-size: 15px;
+    padding: 20px;
+    height: 100%;
 }
 
-#education, #experience {
-    margin: 20px 40px 20px 40px;
-    font-size: 20px;
+#footerList {
+    margin: 1rem;
 }
 
-@media screen and (max-width: 800px) {
-    nav ul {
-        flex-direction: column;
-    }
 
-    nav {
-        background-color: white;
-        color: black;
-        text-align: center;
-    }
+.nav-item {
+    padding: 1rem;
+}
 
-    .body-inner {
-        flex-direction: column;
-        display: flex;
-    }
+footer {
+    background-color: white;
+}
 
-    .container {
-        background-color: #DB4444;
-        justify-content: center;
-        height: auto;
-        width: 100%;
-    }
+#big-container {
+    width: 768px;
 }
