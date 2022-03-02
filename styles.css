@@ -16,8 +16,28 @@ body {
     background-color: #DB4444;
 }
 
+.inner {
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px;
+    height: 100%;
+}
+
 img {
     border-radius: 20px;
+}
+
+.card {
+    opacity: 0;
+    transition: 150ms;
+}
+
+.card.left {
+    transform: translateX(-100px);
+}
+
+.card.right {
+    transform: translateX(100px);
 }
 
 .navbar{
@@ -30,13 +50,6 @@ nav li:hover {
 
 .row {
     --bs-gutter-x: 0;
-}
-
-.inner {
-    background-color: white;
-    border-radius: 20px;
-    padding: 20px;
-    height: 100%;
 }
 
 #footerList {
@@ -54,4 +67,9 @@ footer {
 
 #big-container {
     width: 768px;
+}
+
+.card.show {
+    transform: translateX(0);
+    opacity: 1
 }
