@@ -5,14 +5,14 @@ body {
 }
 
 .text {
-    background-color: #DB4444;
+    background-color: #191D26;
     padding: 1rem;
     font-size: 16px;
 }
 
 .image {
     padding: 1rem;
-    background-color: #DB4444;
+    background-color: #191D26;
 }
 
 .inner {
@@ -85,4 +85,8 @@ footer {
 .card.show {
     transform: translateX(0);
     opacity: 1
+}
+
+a {
+    color: #191D26
 }
