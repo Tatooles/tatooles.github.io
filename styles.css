@@ -58,7 +58,8 @@ img {
 }
 
 nav li:hover {
-    background-color: #DB444444;
+    background-color: #191d2622;
+    border-radius: 10px;
 }
 
 .row {
